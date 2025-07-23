@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include "logic.h"
 #include "validation.h"
-
 void storeInfo(char* name, char* firstname){
 	mergeWelcomeMessage(name, firstname);}
 

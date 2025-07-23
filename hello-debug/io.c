@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "logic.h"
+#include "io.h"
 
 void collectName(){
 	char name[50];
