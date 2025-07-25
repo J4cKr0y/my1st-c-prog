@@ -1,0 +1,16 @@
+<rapport>
+  <titre>Rapport de test du serveur</titre>
+  <date>2025-07-25</date>
+  <resultats>
+    <test>
+      <nom>Connexion API</nom>
+      <statut>Succès</statut>
+      <tempsReponse>120ms</tempsReponse>
+    </test>
+    <test>
+      <nom>Base de données</nom>
+      <statut>Échec</statut>
+      <message>Erreur de connexion</message>
+    </test>
+  </resultats>
+</rapport>

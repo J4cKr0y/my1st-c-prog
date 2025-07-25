@@ -1,0 +1,10 @@
+<utilisateur>
+  <id>001</id>
+  <nom>Marie Antoinette</nom>
+  <email>marie.antoinette@example.com</email>
+  <abonnement>
+    <type>Premium</type>
+    <dateDebut>2025-07-14</dateDebut>
+    <dateFin>2026-07-14</dateFin>
+  </abonnement>
+</utilisateur>
