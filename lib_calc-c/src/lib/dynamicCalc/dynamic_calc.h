@@ -1,11 +1,11 @@
-#ifndef STATIC_CALC_H
-#define STATIC_CALC_H
+#ifndef DYNAMIC_CALC_H
+#define DYNAMIC_CALC_H
 
-long double staticAdd(long double num1, long double num2);
-long double staticSubtract(long double num1, long double num2);
-long double staticMultiply(long double num1, long double num2);
-long double staticDivide(long double numerator, long double denominator);
-long double staticPower(long double base, long double exponent);
-long double staticSquareRoot(long double value);
+long double dynamicAdd(long double num1, long double num2);
+long double dynamicSubtract(long double num1, long double num2);
+long double dynamicMultiply(long double num1, long double num2);
+long double dynamicDivide(long double numerator, long double denominator);
+long double dynamicPower(long double base, long double exponent);
+long double dynamicSquareRoot(long double value);
 
 #endif
