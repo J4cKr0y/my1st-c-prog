@@ -10,6 +10,7 @@ L'application principale (main.c) a ensuite été modifiée pour utiliser les fo
 Pour atteindre cet objectif, nous avons mis en place une structure de répertoires claire et standardisée :
 ```
 - nomprojet/
+  - Makefile               (Automatisation de la compilation)
   - src/
     - app/
       - main.c              (L'application cliente)
@@ -54,7 +55,42 @@ gcc -o bin/lib_calc-c src/app/main.c \
     -L bin -ldynamicCalc \
     -lm
 ```
-## 4. Lancement et exécution du programme
+
+## 4. Construction du projet avec Makefile
+Au lieu de compiler manuellement chaque fichier avec gcc, nous avons mis en place un Makefile pour automatiser l’ensemble du processus. 
+Ce fichier décrit les règles de compilation, les dépendances entre fichiers, et les commandes à exécuter.
+ ### Étapes automatisées par le Makefile :
+ - Compilation de la bibliothèque statique
+ ```gcc -Wall -O2 -c src/lib/staticCalc/static_calc.c -o build/static_calc.o
+ ar rcs build/libstaticCalc.a build/static_calc.o```
+ Le fichier source est compilé en objet, puis archivé avec ar pour produire libstaticCalc.a.
+ - Compilation de la bibliothèque dynamique
+ ```gcc -Wall -O2 -fPIC -c src/lib/dynamicCalc/dynamic_calc.c -o build/dynamic_calc.o
+ gcc -shared -o bin/libdynamicCalc.so build/dynamic_calc.o```
+ L’option -fPIC permet de générer du code indépendant de la position mémoire, nécessaire pour les bibliothèques partagées. 
+ L’option -shared crée le fichier .so.
+ - Compilation et liaison de l’application principale
+ ```gcc -Wall -O2 -o bin/lib_calc-c build/main.o \
+    -I src/lib/staticCalc -I src/lib/dynamicCalc \
+    -L build -lstaticCalc \
+    -L bin -ldynamicCalc \
+    -lm```
+ Le fichier main.c est compilé et lié avec les deux bibliothèques. 
+ Les options -I, -L, -l et -lm permettent de spécifier les chemins et les bibliothèques à inclure.
+ - Gestion automatique des dépendances .h
+ Une amélioration importante apportée par le Makefile est la gestion automatique des dépendances. 
+ Grâce à l’option -MMD, le compilateur génère un fichier .d pour chaque .c, listant les fichiers .h inclus.
+ Par exemple :
+ ```gcc -MMD -c src/app/main.c -o build/main.o```
+ Le fichier build/main.d contiendra :
+ ```build/main.o: src/app/main.c src/lib/staticCalc/static_calc.h src/lib/dynamicCalc/dynamic_calc.h```
+ Ces fichiers .d sont ensuite inclus dans le Makefile :
+ ```-include $(DEPS)```
+ Avantage : Si un fichier .h est modifié, make sait automatiquement quels fichiers .c doivent être recompilés. 
+ Cela évite les recompilations inutiles et garantit que l’exécutable est toujours à jour.
+
+
+## 5. Lancement et exécution du programme
 Pour exécuter le programme, une étape cruciale a été nécessaire pour que l'exécutable puisse trouver la bibliothèque dynamique. 
 Deux méthodes s'offraient à nous :
 
@@ -65,7 +101,7 @@ On pourrait envisager un script qui automatise ça en cas de changement de la li
 
 Un petit ./ suivie du chemin vers l'exécutable et c'était bon. 
 
-## 5. Intérêt de cette approche modulaire
+## 6. Intérêt de cette approche modulaire
 Cette expérience a mis en lumière les avantages de l'utilisation des bibliothèques :
 - Réutilisabilité : Les fonctions de calcul sont maintenant des composants indépendants qui peuvent être utilisés par d'autres applications sans avoir à réécrire le code.
 - Modularité et Maintenance : Le code est organisé de manière plus claire. 
@@ -83,6 +119,21 @@ C'est le principe qui sous-tend la plupart des systèmes d'exploitation modernes
 Par contre, l'exécutable a besoin que la bibliothèque dynamique soit présente sur la machine pour pouvoir fonctionner. 
 Si le fichier .so est manquant ou n'est pas à la bonne version, le programme ne démarrera pas, ce qui peut créer un problème de "DLL hell" sur d'autres systèmes.
 
+- L’utilisation d’un Makefile apporte plusieurs bénéfices :
+Automatisation : Une seule commande make suffit pour compiler tout le projet.
+Modularité : Chaque composant est compilé indépendamment.
+Maintenance : Les dépendances sont gérées automatiquement.
+Clarté : Le processus de compilation est documenté et reproductible.
+
+## 7. Comparaison entre bibliothèques statiques et dynamiques
+
+|	Type de bibliothèque	|			Avantages				|				Inconvénients				 |
+----------------------------------------------------------------------------------------------------------
+|		Statique (.a)		|Autonome, rapide à l’exécution		|Taille plus grande, recompilation nécessaire	|
+-----------------------------------------------------------------------------------------------------------------
+|	Dynamique (.so)			|Mise à jour facile, mémoire partagée|	Dépendance externe, risque de version manquante|
+-------------------------------------------------------------------------------------------------------------------
+
 ## Conclusion
 L'intérêt principal des bibliothèques est donc de séparer le développement en composants réutilisables.
 
@@ -90,3 +141,6 @@ L'intérêt principal des bibliothèques est donc de séparer le développement 
 
 - Pour les grands projets ou les frameworks, où de nombreux programmes partagent des fonctionnalités, 
 la bibliothèque dynamique est indispensable pour la modularité, la gestion des mises à jour et l'économie de ressources.
+
+- L’intégration d’un Makefile dans le projet a permis de professionnaliser le processus de compilation, tout en renforçant la modularité et la maintenabilité du code. 
+Cette approche est particulièrement adaptée aux projets évolutifs, où les bibliothèques peuvent être réutilisées, mises à jour ou remplacées sans impacter l’ensemble du système.
