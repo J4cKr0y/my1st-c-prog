@@ -30,16 +30,24 @@ Cette architecture permet de séparer le code de l'application cliente du code d
 Le processus de construction a été réalisé en trois étapes principales, utilisant le compilateur gcc :
 
 Compilation de la bibliothèque statique (.a) :
-```gcc -c src/lib/staticCalc/static_calc.c -o build/static_calc.o```
+```
+gcc -c src/lib/staticCalc/static_calc.c -o build/static_calc.o
+```
 Le fichier static_calc.c a été compilé en un fichier objet (.o).
-```ar rcs build/libstaticCalc.a build/static_calc.o```
+```
+ar rcs build/libstaticCalc.a build/static_calc.o
+```
 Ce fichier objet a été archivé à l'aide de la commande ar pour créer la bibliothèque libstaticCalc.a.
 
 Compilation de la bibliothèque dynamique (.so) :
-```gcc -c -fPIC src/lib/dynamicCalc/dynamic_calc.c -o build/dynamic_calc.o```
+```
+gcc -c -fPIC src/lib/dynamicCalc/dynamic_calc.c -o build/dynamic_calc.o
+```
 Le fichier dynamic_calc.c a été compilé en un fichier objet en utilisant l'option -fPIC (Position-Independent Code). 
 Cela est essentiel pour permettre au système de charger la bibliothèque à n'importe quelle adresse en mémoire.
-```gcc -shared -o bin/libdynamicCalc.so build/dynamic_calc.o```
+```
+gcc -shared -o bin/libdynamicCalc.so build/dynamic_calc.o
+```
 Le fichier objet a ensuite été lié avec l'option -shared pour créer le fichier libdynamicCalc.so.
 
 Compilation et liaison de l'application principale :
@@ -61,31 +69,43 @@ Au lieu de compiler manuellement chaque fichier avec gcc, nous avons mis en plac
 Ce fichier décrit les règles de compilation, les dépendances entre fichiers, et les commandes à exécuter.
  ### Étapes automatisées par le Makefile :
  - Compilation de la bibliothèque statique
- ```gcc -Wall -O2 -c src/lib/staticCalc/static_calc.c -o build/static_calc.o
- ar rcs build/libstaticCalc.a build/static_calc.o```
+ ```
+gcc -Wall -O2 -c src/lib/staticCalc/static_calc.c -o build/static_calc.o
+ ar rcs build/libstaticCalc.a build/static_calc.o
+```
  Le fichier source est compilé en objet, puis archivé avec ar pour produire libstaticCalc.a.
  - Compilation de la bibliothèque dynamique
- ```gcc -Wall -O2 -fPIC -c src/lib/dynamicCalc/dynamic_calc.c -o build/dynamic_calc.o
- gcc -shared -o bin/libdynamicCalc.so build/dynamic_calc.o```
+ ```
+gcc -Wall -O2 -fPIC -c src/lib/dynamicCalc/dynamic_calc.c -o build/dynamic_calc.o
+ gcc -shared -o bin/libdynamicCalc.so build/dynamic_calc.o
+```
  L’option -fPIC permet de générer du code indépendant de la position mémoire, nécessaire pour les bibliothèques partagées. 
  L’option -shared crée le fichier .so.
  - Compilation et liaison de l’application principale
- ```gcc -Wall -O2 -o bin/lib_calc-c build/main.o \
+ ```
+gcc -Wall -O2 -o bin/lib_calc-c build/main.o \
     -I src/lib/staticCalc -I src/lib/dynamicCalc \
     -L build -lstaticCalc \
     -L bin -ldynamicCalc \
-    -lm```
+    -lm
+```
  Le fichier main.c est compilé et lié avec les deux bibliothèques. 
  Les options -I, -L, -l et -lm permettent de spécifier les chemins et les bibliothèques à inclure.
  - Gestion automatique des dépendances .h
  Une amélioration importante apportée par le Makefile est la gestion automatique des dépendances. 
  Grâce à l’option -MMD, le compilateur génère un fichier .d pour chaque .c, listant les fichiers .h inclus.
  Par exemple :
- ```gcc -MMD -c src/app/main.c -o build/main.o```
+ ```
+gcc -MMD -c src/app/main.c -o build/main.o
+```
  Le fichier build/main.d contiendra :
- ```build/main.o: src/app/main.c src/lib/staticCalc/static_calc.h src/lib/dynamicCalc/dynamic_calc.h```
+ ```
+build/main.o: src/app/main.c src/lib/staticCalc/static_calc.h src/lib/dynamicCalc/dynamic_calc.h
+```
  Ces fichiers .d sont ensuite inclus dans le Makefile :
- ```-include $(DEPS)```
+ ```
+-include $(DEPS)
+```
  Avantage : Si un fichier .h est modifié, make sait automatiquement quels fichiers .c doivent être recompilés. 
  Cela évite les recompilations inutiles et garantit que l’exécutable est toujours à jour.
 
@@ -127,12 +147,10 @@ Clarté : Le processus de compilation est documenté et reproductible.
 
 ## 7. Comparaison entre bibliothèques statiques et dynamiques
 
-|	Type de bibliothèque	|			Avantages				|				Inconvénients				 |
-----------------------------------------------------------------------------------------------------------
-|		Statique (.a)		|Autonome, rapide à l’exécution		|Taille plus grande, recompilation nécessaire	|
------------------------------------------------------------------------------------------------------------------
-|	Dynamique (.so)			|Mise à jour facile, mémoire partagée|	Dépendance externe, risque de version manquante|
--------------------------------------------------------------------------------------------------------------------
+|	Type de bibliothèque	|		Avantages		|		Inconvénients			|
+|:-----------------------------:|:-------------------------------------:|:---------------------------------------------:|
+|	Statique (.a)		|Autonome, rapide à l’exécution		|Taille plus grande, recompilation nécessaire	|
+|	Dynamique (.so)		|Mise à jour facile, mémoire partagée	|Dépendance externe, risque de version manquante|
 
 ## Conclusion
 L'intérêt principal des bibliothèques est donc de séparer le développement en composants réutilisables.
