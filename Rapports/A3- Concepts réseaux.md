@@ -905,6 +905,32 @@ Identifiant (ID) : 0x0cbb.
 Sequence Number (Seq) : 6 (pour la requête de la trame 7).
 
 
+### schéma de l'en-tête 
+| Octet |Bits 0–1-2-3-4-5-6-7|8–9-10-11-12-13-14-15|16–17-18-19-20-21-22-23|24–25-26-27-28-29-30-31|
+|-------|----------------------|----------------------|------------------------|-----------------------|
+| 0     | Version (4 bits)     | IHL (4 bits)         |                        |                       |
+| 1     | Type of Service      |                      |                        |                       |
+| 2     | Total Length (high)  | Total Length (low)   |                        |                       |
+| 3     |                      |                      |                        |                       |
+| 4     | Identification (high)| Identification (low) |                        |                       |
+| 5     |                      |                      |                        |                       |
+| 6     | Flags (3 bits)       | Fragment Offset (5)  | Fragment Offset (8)    |                       |
+| 7     | Fragment Offset (8)  |                      |                        |                       |
+| 8     | Time to Live         |                      |                        |                       |
+| 9     | Protocol             |                      |                        |                       |
+| 10    | Header Checksum (high)| Header Checksum (low)|                       |                       |
+| 11    |                      |                      |                        |                       |
+| 12    | Source IP (1er octet)|                      |                        |                       |
+| 13    | Source IP (2e octet) |                      |                        |                       |
+| 14    | Source IP (3e octet) |                      |                        |                       |
+| 15    | Source IP (4e octet) |                      |                        |                       |
+| 16    | Destination IP (1er) |                      |                        |                       |
+| 17    | Destination IP (2e)  |                      |                        |                       |
+| 18    | Destination IP (3e)  |                      |                        |                       |
+| 19    | Destination IP (4e)  |                      |                        |                       |
+
+
+
 ### Conclusion
 La capture confirme la transition réussie vers un flux de communication IPv4 en utilisant l'option ping -4. La séquence DNS, l'encapsulation ICMP/IPv4/Ethernet II et la résolution inverse DNS (PTR) sont clairement validées. Cette analyse souligne l'importance des outils de dissection pour comprendre la complexité des communications réseaux, où même un simple ping active une chaîne complète de protocoles du modèle TCP/IP.
 
