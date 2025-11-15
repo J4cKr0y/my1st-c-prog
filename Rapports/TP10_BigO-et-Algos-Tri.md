@@ -1587,6 +1587,8 @@ Mais dans la pratique, on l'utilise rarement.
 Pourquoi? Parce que Big O mesure le nombre d'opérations, mais pas leur coût réel !
 
 Les processeurs modernes ont une hiérarchie mémoire :
+| Nom	   | Nbr cycle		| Taille 	| vitesse				|
+|----------|----------------|-----------|-----------------------|
 | L1 Cache | 1 cycle  		|  (32 Ko) 	| Rapide comme l'éclair |
 | L2 Cache | 4 cycles   	|(256 Ko) 	| La vitesse du son		|
 | L3 Cache | 12 cycles  	|(8 Mo)     | Une ferrari			|
